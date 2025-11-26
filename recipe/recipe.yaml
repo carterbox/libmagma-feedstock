@@ -1,0 +1,292 @@
+# find  magma_* | sed "s/magma_/'/" | sed "s/\.h/',/"
+schema_version: 1
+
+context:
+  version: "2.9.0"
+
+recipe:
+  name: libmagma-split
+  version: ${{ version }}
+
+build:
+  number: 6
+  skip:
+    - cuda_compiler_version == "None"
+  # debugging skips below
+    # - not (linux64 and cuda_compiler_version == "12.9")
+    # - not win
+
+cache:
+  source:
+    - url: https://icl.utk.edu/projectsfiles/magma/downloads/magma-${{ version }}.tar.gz
+      sha256: ff77fd3726b3dfec3bfb55790b06480aa5cc384396c2db35c56fdae4a82c641c
+      patches:
+        - patches/0001-fix-compilation-issue-with-cuda-13.patch
+
+  build:
+    script: cache
+
+  requirements:
+    build:
+      - ${{ compiler('c') }}
+      - ${{ compiler('cxx') }}
+      - ${{ compiler('cuda') }}
+      - ${{ stdlib('c') }}
+      - cmake >=3.30,<4
+      - if: linux
+        then: libgomp
+      # Commented out tools needed when doing source-code generation
+      # - if: win
+      #   then:
+      #     - m2-coreutils
+      #     - m2-make
+      #     - m2-perl
+      # - if: unix
+      #   then: make
+      - ninja
+    host:
+      - cuda-version ${{ cuda_compiler_version }}.*
+      - cuda-cudart-dev
+      - cuda-profiler-api
+      - libcublas-dev
+      - libcusparse-dev
+      - liblapack
+      - libblas
+      - nomkl
+
+outputs:
+  - package:
+      name: libmagma
+    build:
+      files:
+        include:
+          - if: unix
+            then: lib
+          - if: win
+            then: Library\bin
+        exclude:
+          - if: unix
+            then: lib/pkgconfig
+          - if: linux
+            then: lib/libmagma_sparse.so
+          - if: win
+            then: Library\bin\magma_sparse.dll
+    requirements:
+      ignore_run_exports:
+        by_name:
+          - cuda-version
+        from_package:
+          - cuda-cudart-dev
+          - libcublas-dev
+          - libcusparse-dev
+      host:
+        - cuda-version ${{ cuda_compiler_version }}.*
+      run:
+        - ${{ pin_compatible('cuda-version', upper_bound='x', lower_bound='x') }}
+        - cuda-cudart
+        - libcublas
+        - libcusparse
+    tests:
+      - package_contents:
+          files:
+          - if: unix
+            then: lib/libmagma.so
+          - if: win
+            then: bin\magma.dll exit 1
+    about:
+      homepage: https://icl.utk.edu/magma/
+      repository: https://github.com/icl-utk-edu/magma/
+      summary: The Matrix Algebra on GPU and Multicore Architectures (MAGMA) runtime libraries.
+      description: >-
+        This is a runtime package only. Developers should install libmagma-devel to build with
+        MAGMA.
+      license: BSD-3-Clause
+      license_file: COPYRIGHT
+
+  - package:
+      name: libmagma_sparse
+    build:
+      files:
+        - if: linux
+          then:
+            - lib/libmagma_sparse.so
+        - if: win
+          then:
+            - Library\bin\magma_sparse.dll
+    requirements:
+      ignore_run_exports:
+        by_name:
+          - cuda-version
+        from_package:
+          - cuda-cudart-dev
+          - libcublas-dev
+          - libcusparse-dev
+      host:
+        - cuda-version ${{ cuda_compiler_version }}.*
+        - ${{ pin_subpackage('libmagma', exact=True) }}
+      run:
+        - ${{ pin_compatible('cuda-version', upper_bound='x', lower_bound='x') }}
+        - ${{ pin_subpackage('libmagma', exact=True) }}
+        - cuda-cudart
+        - libcusparse
+    tests:
+      - package_contents:
+          files:
+            - if: unix
+              then: lib/libmagma_sparse.so
+            - if: win
+              then: bin\magma_sparse.dll
+    about:
+      homepage: https://icl.utk.edu/magma/
+      repository: https://github.com/icl-utk-edu/magma/
+      summary: The Matrix Algebra on GPU and Multicore Architectures (MAGMA) runtime libraries.
+      description: >-
+        This is a runtime package only. Developers should install libmagma-devel to build with
+        MAGMA.
+      license: BSD-3-Clause
+      license_file: COPYRIGHT
+
+  - package:
+      name: libmagma-devel
+    build:
+      files:
+        - if: unix
+          then:
+            - include
+            - lib/pkgconfig
+        - if: win
+          then:
+            - Library\include
+            - Library\lib
+    requirements:
+      run_exports:
+        - ${{ pin_subpackage('libmagma', upper_bound='x.x.x') }}
+        - ${{ pin_subpackage('libmagma_sparse', upper_bound='x.x.x') }}
+      ignore_run_exports:
+        by_name:
+          - cuda-version
+        from_package:
+          - cache-build  # Naming the cache build package doesn't work
+          - cuda-cudart-dev
+          - libcublas-dev
+          - libcusparse-dev
+      host:
+        - cuda-version ${{ cuda_compiler_version }}.*
+        - ${{ pin_subpackage('libmagma', exact=True) }}
+        - ${{ pin_subpackage('libmagma_sparse', exact=True) }}
+      run:
+        - ${{ pin_compatible('cuda-version', upper_bound='x', lower_bound='x') }}
+        - if: not win
+          then:
+            - ${{ pin_subpackage('libmagma', exact=True) }}
+            - ${{ pin_subpackage('libmagma_sparse', exact=True) }}
+    tests:
+      - package_contents:
+          lib:
+            - pkgconfig\magma.pc
+            # - if: unix # rattler only actual package not what is in prefix at test time
+            #   then:
+            #     - libmagma.so
+            #     - libmagma_sparse.so
+            - if: win
+              then:
+                - magma.lib
+                - magma_sparse.lib
+          include:
+            - magma.h
+            - magma_auxiliary.h
+            - magma_batched.h
+            - magma_bulge.h
+            - magma_cbatched.h
+            - magma_cbulge.h
+            - magma_cbulgeinc.h
+            - magma_cgehrd_m.h
+            - magma_c.h
+            - magma_clapack.h
+            - magma_config.h
+            - magma_copy.h
+            - magma_copy_v1.h
+            - magma_cvbatched.h
+            - magma_dbatched.h
+            - magma_dbulge.h
+            - magma_dbulgeinc.h
+            - magma_dgehrd_m.h
+            - magma_d.h
+            - magma_dlapack.h
+            - magma_ds.h
+            - magma_dvbatched.h
+            - magma_hbatched.h
+            - magma_htc.h
+            - magma_lapack.h
+            - magma_mangling_cmake.h
+            - magma_mangling.h
+            - magma_operators.h
+            - magma_sbatched.h
+            - magma_sbulge.h
+            - magma_sbulgeinc.h
+            - magma_sgehrd_m.h
+            - magma_s.h
+            - magma_slapack.h
+            - magma_svbatched.h
+            - magma_types.h
+            - magma_v2.h
+            - magma_vbatched.h
+            - magma_zbatched.h
+            - magma_zbulge.h
+            - magma_zbulgeinc.h
+            - magma_zc.h
+            - magma_zgehrd_m.h
+            - magma_z.h
+            - magma_zlapack.h
+            - magma_zvbatched.h
+            - magmasparse_c.h
+            - magmasparse_d.h
+            - magmasparse_ds.h
+            - magmasparse_mmio.h
+            - magmasparse_s.h
+            - magmasparse_types.h
+            - magmasparse_zc.h
+            - magmasparse_z.h
+            - magmablas_c.h
+            - magmablas_c_v1.h
+            - magmablas_c_v1_map.h
+            - magmablas_d.h
+            - magmablas_ds.h
+            - magmablas_ds_v1.h
+            - magmablas_ds_v1_map.h
+            - magmablas_d_v1.h
+            - magmablas_d_v1_map.h
+            - magmablas_h.h
+            - magmablas_s.h
+            - magmablas_s_v1.h
+            - magmablas_s_v1_map.h
+            - magmablas_v1.h
+            - magmablas_v1_map.h
+            - magmablas_zc.h
+            - magmablas_zc_v1.h
+            - magmablas_zc_v1_map.h
+            - magmablas_z.h
+            - magmablas_z_v1.h
+            - magmablas_z_v1_map.h
+
+about:
+  homepage: https://icl.utk.edu/magma/
+  repository: https://github.com/icl-utk-edu/magma/
+  summary: Matrix Algebra on GPU and Multicore Architectures (MAGMA)
+  description: >-
+    Matrix Algebra on GPU and Multi-core Architectures (MAGMA) is a collection of
+    next-generation linear algebra libraries for heterogeneous computing. MAGMA supports
+    interfaces for current linear algebra packages and standards (e.g., LAPACK and BLAS) to
+    enable computational scientists to easily port any linear algebra–reliant software
+    component to heterogeneous computing systems. MAGMA enables applications to fully
+    exploit the power of current hybrid systems of many-core CPUs and
+    multi-GPUs/coprocessors to deliver the fastest possible time to accurate solutions
+    within given energy constraints.
+  license: BSD-3-Clause
+  license_file: COPYRIGHT
+
+extra:
+  feedstock-name: libmagma
+  recipe-maintainers:
+    - carterbox
+    - conda-forge/pytorch-cpu
