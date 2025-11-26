@@ -4,13 +4,14 @@ set -exv
 # make generate --jobs ${CPU_COUNT}
 
 # CUDAARCHS set by nvcc compiler package
+export CUDAARCHS="89"
 
 # Conda-forge nvcc compiler flags environment variable doesn't match CMake environment variable
 # Redirect it so that the flags are added to nvcc calls
 export CUDAFLAGS="${CUDAFLAGS} ${CUDA_CFLAGS}"
 
 # Compress SASS and PTX in the binary to reduce disk usage
-export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all"
+# export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all"
 
 mkdir build
 cd build
@@ -31,7 +32,6 @@ cmake $SRC_DIR \
 cmake --build . \
     --config Release \
     --parallel ${CPU_COUNT} \
-    --target magma magma_sparse \
     --verbose
 
 cmake --install .  --strip
