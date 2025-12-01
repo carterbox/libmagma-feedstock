@@ -35,3 +35,11 @@ cmake --build . \
     --verbose
 
 cmake --install .  --strip
+
+# Copy tests to prefix
+mkdir -p $PREFIX/bin
+strip --strip-unneeded $SRC_DIR/build/testing/*
+cp -r $SRC_DIR/build/testing/* $PREFIX/bin/
+cp -r $SRC_DIR/testing/run*.py $PREFIX/bin/
+mkdir -p $PREFIX/lib
+cp -r $SRC_DIR/build/lib/*test*.so $PREFIX/lib/

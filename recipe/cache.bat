@@ -37,3 +37,11 @@ if errorlevel 1 exit /b 1
 
 cmake --install .
 if errorlevel 1 exit /b 1
+
+:: Copy tests to prefix
+if not exist "%LIBRARY_PREFIX%\bin\" (
+    mkdir "%LIBRARY_PREFIX%\bin\"
+)
+xcopy /E /I /Y "%SRC_DIR%\build\testing\*" "%LIBRARY_PREFIX%\bin\"
+xcopy /Y "%SRC_DIR%\testing\run*.py" "%LIBRARY_PREFIX%\bin\"
+xcopy /E /I /Y "%SRC_DIR%\build\lib\*" "%LIBRARY_PREFIX%\bin\"

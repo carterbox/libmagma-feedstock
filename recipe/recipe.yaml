@@ -59,18 +59,10 @@ outputs:
       name: libmagma
     build:
       files:
-        include:
-          - if: unix
-            then: lib
-          - if: win
-            then: Library\bin
-        exclude:
-          - if: unix
-            then: lib/pkgconfig
-          - if: linux
-            then: lib/libmagma_sparse.so
-          - if: win
-            then: Library\bin\magma_sparse.dll
+        - if: linux
+          then: lib/libmagma.so
+        - if: win
+          then: Library\bin\magma.dll
     requirements:
       ignore_run_exports:
         by_name:
@@ -108,11 +100,9 @@ outputs:
     build:
       files:
         - if: linux
-          then:
-            - lib/libmagma_sparse.so
+          then: lib/libmagma_sparse.so
         - if: win
-          then:
-            - Library\bin\magma_sparse.dll
+          then: Library\bin\magma_sparse.dll
     requirements:
       ignore_run_exports:
         by_name:
@@ -182,8 +172,14 @@ outputs:
             - ${{ pin_subpackage('libmagma_sparse', exact=True) }}
     tests:
       - package_contents:
+          files:
+            - if: unix
+              then:
+                - lib/pkgconfig/magma.pc
+            - if: win
+              then:
+                - Library\lib\pkgconfig\magma.pc
           lib:
-            - pkgconfig\magma.pc
             # - if: unix # rattler only actual package not what is in prefix at test time
             #   then:
             #     - libmagma.so
@@ -269,6 +265,50 @@ outputs:
             - magmablas_z_v1.h
             - magmablas_z_v1_map.h
 
+  - package:
+      name: libmagma-tests
+    build:
+      files:
+        - if: unix
+          then:
+            - bin/run*.py
+            - bin/testing*
+            - lib/libtester.so
+            - lib/liblapacktest.so
+        - if: win
+          then:
+            - Library/bin/run*.py
+            - Library/bin/testing*
+            - Library/bin/tester.dll
+            - Library/bin/lapacktest.dll
+    requirements:
+      ignore_run_exports:
+        by_name:
+          - cuda-version
+        from_package:
+          - cache-build  # Naming the cache build package doesn't work
+          - cuda-cudart-dev
+          - libcublas-dev
+          - libcusparse-dev
+      host:
+        - cuda-version ${{ cuda_compiler_version }}.*
+      run:
+        - ${{ pin_compatible('cuda-version', upper_bound='x', lower_bound='x') }}
+        - ${{ pin_subpackage('libmagma', upper_bound='x') }}
+        - ${{ pin_subpackage('libmagma_sparse', upper_bound='x') }}
+    tests:
+      - package_contents:
+          files:
+            - if: unix
+              then:
+                - bin/run_tests.py
+                - bin/run_summarize.py
+                - bin/testing_blas_s
+            - if: win
+              then:
+                - Library\bin\run_tests.py
+                - Library\bin\run_summarize.py
+                - Library\bin\testing_blas_s.exe
 about:
   homepage: https://icl.utk.edu/magma/
   repository: https://github.com/icl-utk-edu/magma/
