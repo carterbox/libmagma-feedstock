@@ -84,7 +84,7 @@ outputs:
           - if: unix
             then: lib/libmagma.so
           - if: win
-            then: bin\magma.dll exit 1
+            then: Library\bin\magma.dll
     about:
       homepage: https://icl.utk.edu/magma/
       repository: https://github.com/icl-utk-edu/magma/
@@ -125,7 +125,7 @@ outputs:
             - if: unix
               then: lib/libmagma_sparse.so
             - if: win
-              then: bin\magma_sparse.dll
+              then: Library\bin\magma_sparse.dll
     about:
       homepage: https://icl.utk.edu/magma/
       repository: https://github.com/icl-utk-edu/magma/
@@ -268,6 +268,7 @@ outputs:
   - package:
       name: libmagma-tests
     build:
+      skip: win
       files:
         - if: unix
           then:

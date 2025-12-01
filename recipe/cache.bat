@@ -28,6 +28,7 @@ cmake %SRC_DIR% ^
 if errorlevel 1 exit /b 1
 
 :: Explicitly name build targets to avoid building tests
+:: The tests fail to link on Windows
 cmake --build . ^
     --config Release ^
     --parallel %CPU_COUNT% ^
