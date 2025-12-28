@@ -45,6 +45,12 @@ jobs:
             runs_on: ['cirun-openstack-gpu-large--${{ github.run_id }}-linux_aarch64_c_stdlib_version2.28cuda_c_h696c8e49', 'linux', 'x64', 'self-hosted']
             DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
             CONDA_FORGE_DOCKER_RUN_ARGS: "--gpus all"
+          - CONFIG: linux_aarch64_c_stdlib_version2.34cuda_compiler_version12.9
+            UPLOAD_PACKAGES: True
+            os: ubuntu
+            runs_on: ['cirun-openstack-gpu-large--${{ github.run_id }}-linux_aarch64_c_stdlib_version2.34cuda_c_hb08d3367', 'linux', 'x64', 'self-hosted']
+            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
+            CONDA_FORGE_DOCKER_RUN_ARGS: "--gpus all"
           - CONFIG: win_64_cuda_compiler_version12.9
             UPLOAD_PACKAGES: True
             os: windows
