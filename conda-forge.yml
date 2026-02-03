@@ -6,15 +6,20 @@ build_platform:
 conda_build:
   error_overlinking: true
   pkg_format: '2'
+  # Highest compression is 22. Increased compression to prevent timeout issue when
+  # uploading packages. (Smaller package; less upload time)
+  zstd_compression_level: 19
 conda_forge_output_validation: true
 github:
   branch_name: main
   tooling_branch_name: main
 github_actions:
   self_hosted: true
+  store_build_artifacts: true
   triggers:
   - push
   - pull_request
+  timeout_minutes: 360
 provider:
   linux_64: github_actions
   linux_aarch64: default

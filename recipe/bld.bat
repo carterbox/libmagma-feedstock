@@ -21,7 +21,7 @@ cmake %SRC_DIR% ^
   -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^
   -DMAGMA_ENABLE_CUDA:BOOL=ON ^
   -DUSE_FORTRAN:BOOL=OFF ^
-  -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all" ^
+  -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Xfatbin -compress-mode=size" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF ^
   -DCMAKE_CXX_STANDARD=17 ^
   %CMAKE_ARGS%

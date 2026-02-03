@@ -10,7 +10,7 @@ set -exv
 export CUDAFLAGS="${CUDAFLAGS} ${CUDA_CFLAGS}"
 
 # Compress SASS and PTX in the binary to reduce disk usage
-export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all"
+export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all -Xfatbin -compress-mode=size"
 
 mkdir build
 cd build
