@@ -109,6 +109,7 @@ requirements:
     - {{ stdlib('c') }}
     - cmake >=3.30,<4
     - libgomp  # [linux]
+    - vcomp14  # [win]
     - arm-variant * {{ arm_variant_type }}  # [linux and aarch64 and cuda_compiler_version != "None"]
     # Commented out tools needed when doing source-code generation
     # - m2-coreutils  # [win]
@@ -151,6 +152,7 @@ outputs:
         - {{ compiler('cuda') }}
         - {{ stdlib('c') }}
         - libgomp  # [linux]
+        - vcomp14  # [win]
         - arm-variant * {{ arm_variant_type }}  # [linux and aarch64 and cuda_compiler_version != "None"]
       host:
         - cuda-version {{ cuda_compiler_version }}
@@ -199,6 +201,7 @@ outputs:
         - {{ compiler('cuda') }}
         - {{ stdlib('c') }}
         - libgomp  # [linux]
+        - vcomp14  # [win]
         - arm-variant * {{ arm_variant_type }}  # [linux and aarch64 and cuda_compiler_version != "None"]
       host:
         - cuda-version {{ cuda_compiler_version }}
@@ -247,6 +250,7 @@ outputs:
         - {{ compiler('cuda') }}
         - {{ stdlib('c') }}
         - libgomp  # [linux]
+        - vcomp14  # [win]
         - arm-variant * {{ arm_variant_type }}  # [linux and aarch64 and cuda_compiler_version != "None"]
       host:
         - cuda-version {{ cuda_compiler_version }}
