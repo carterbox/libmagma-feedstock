@@ -4,7 +4,6 @@ __migrator:
   # this migration should not be unpaused!
   # It's intended to be copied on an as-needed basis to feedstocks that want to support tegra
   paused: true
-  use_local: true
   operation: key_add
   migration_number:
     1
