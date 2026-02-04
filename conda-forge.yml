@@ -8,7 +8,7 @@ conda_build:
   pkg_format: '2'
   # Highest compression is 22. Increased compression to prevent timeout issue when
   # uploading packages. (Smaller package; less upload time)
-  zstd_compression_level: 19
+  zstd_compression_level: 22
 conda_forge_output_validation: true
 github:
   branch_name: main

@@ -10,7 +10,12 @@ set -exv
 export CUDAFLAGS="${CUDAFLAGS} ${CUDA_CFLAGS}"
 
 # Compress SASS and PTX in the binary to reduce disk usage
-export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all -Xfatbin -compress-mode=size"
+export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all"
+
+if [[ "${cuda_compiler_version}" == 13.* ]]; then
+  export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-mode=size"
+fi
+
 
 mkdir build
 cd build
