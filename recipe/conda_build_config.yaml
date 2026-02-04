@@ -2,4 +2,3 @@
 github_actions_labels:          # [linux or win]
 - cirun-openstack-gpu-large     # [linux]
 - cirun-azure-windows-2xlarge   # [win]
-

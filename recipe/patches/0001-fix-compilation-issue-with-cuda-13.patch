@@ -13,7 +13,7 @@ index c3ae4e0eb..9c8e6c67f 100644
 +++ b/interface_cuda/interface.cpp
 @@ -391,10 +391,18 @@ magma_print_environment()
          check_error( err );
- 
+
          #ifdef MAGMA_HAVE_CUDA
 +
 +        int clock_khz;
@@ -31,6 +31,5 @@ index c3ae4e0eb..9c8e6c67f 100644
                  prop.totalGlobalMem / (1024.*1024.),
                  prop.major,
                  prop.minor );
--- 
+--
 2.47.1.windows.2
-
