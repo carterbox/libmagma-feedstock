@@ -17,6 +17,20 @@ set CUDAFLAGS=--use-local-env
 :: Compress SASS and PTX in the binary to reduce disk usage
 set CUDAFLAGS=%CUDAFLAGS% -Xfatbin -compress-all
 
+:: Ship some PTX instead of SASS to save space. These archs are shipped as SASS in the CUDA
+:: 13.0 build, so they are somewhat redundant. SASS before 75 is not redundant because it is
+:: dropped in CUDA 13.0. Users can upgrade to CTK 13.0 to avoid JIT.
+if "%cuda_compiler_version:~0,3%"=="12." (
+  : 80
+  set "CUDAARCHS=%CUDAARCHS:86-real=86-virtual%"
+  set "CUDAARCHS=%CUDAARCHS:89-real=89-virtual%"
+  : 90
+  : 100
+  set "CUDAARCHS=%CUDAARCHS:103f-real=103f-virtual%"
+  : 120
+  set "CUDAARCHS=%CUDAARCHS:121f-real=121f-virtual%"
+)
+
 if "%cuda_compiler_version:~0,3%"=="13." (
   set CUDAFLAGS=%CUDAFLAGS% -Xfatbin -compress-mode=size
 )
