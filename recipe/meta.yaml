@@ -77,7 +77,7 @@ source:
 
 build:
   number: 2
-  skip: true  # [cuda_compiler_version == "None"]
+  skip: true  # [cuda_compiler_version == "None" or not (win and arm64)]
   # debugging skips below
   # skip: true  # [not (linux64 and cuda_compiler_version == "12.9")]
 
