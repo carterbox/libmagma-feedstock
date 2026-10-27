@@ -26,7 +26,7 @@ jobs:
             CONFIG_SHORT: win_arm64_cuda_compiler_version13.4
             STORE_BUILD_ARTIFACTS: True
             UPLOAD_PACKAGES: True
-            build_platform: win-arm64
+            build_platform: win-64
             build_workspace_dir: C:\\bld\\
             docker_run_args: 
             free_disk_space: skip
