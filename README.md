@@ -11,37 +11,24 @@ Home: https://icl.utk.edu/magma/
 
 Package license: BSD-3-Clause
 
+Summary: The Matrix Algebra on GPU and Multicore Architectures (MAGMA) runtime libraries.
+
+Development: https://github.com/icl-utk-edu/magma/
+
+This is a runtime package only. Developers should install libmagma-devel to build with MAGMA.
+
+About libmagma-devel
+--------------------
+
+Home: https://icl.utk.edu/magma/
+
+Package license: BSD-3-Clause
+
 Summary: Matrix Algebra on GPU and Multicore Architectures (MAGMA)
 
 Development: https://github.com/icl-utk-edu/magma/
 
 Matrix Algebra on GPU and Multi-core Architectures (MAGMA) is a collection of next-generation linear algebra libraries for heterogeneous computing. MAGMA supports interfaces for current linear algebra packages and standards (e.g., LAPACK and BLAS) to enable computational scientists to easily port any linear algebra–reliant software component to heterogeneous computing systems. MAGMA enables applications to fully exploit the power of current hybrid systems of many-core CPUs and multi-GPUs/coprocessors to deliver the fastest possible time to accurate solutions within given energy constraints.
-
-About libmagma
---------------
-
-Home: https://icl.utk.edu/magma/
-
-Package license: BSD-3-Clause
-
-Summary: The Matrix Algebra on GPU and Multicore Architectures (MAGMA) runtime libraries.
-
-Development: https://github.com/icl-utk-edu/magma/
-
-This is a runtime package only. Developers should install libmagma-devel to build with MAGMA.
-
-About libmagma_sparse
----------------------
-
-Home: https://icl.utk.edu/magma/
-
-Package license: BSD-3-Clause
-
-Summary: The Matrix Algebra on GPU and Multicore Architectures (MAGMA) runtime libraries.
-
-Development: https://github.com/icl-utk-edu/magma/
-
-This is a runtime package only. Developers should install libmagma-devel to build with MAGMA.
 
 Current build status
 ====================
